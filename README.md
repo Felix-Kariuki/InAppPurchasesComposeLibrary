@@ -26,7 +26,7 @@ repositories {
 
 ```gradle
 dependencies {
-	   implementation 'com.github.Felix-Kariuki:InAppUrchasesComposeLibrary:0.1.1'
+	   implementation 'com.github.Felix-Kariuki:InAppPurchasesComposeLibrary:0.1.1'
 }
 ```
 
