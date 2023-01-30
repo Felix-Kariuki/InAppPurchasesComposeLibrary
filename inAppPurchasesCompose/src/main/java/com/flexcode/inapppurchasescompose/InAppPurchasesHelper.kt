@@ -7,13 +7,11 @@ import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class InAppPurchasesHelper(private val activity: Activity){
+data class InAppPurchasesHelper(private val activity: Activity, val productId: String){
 
     private lateinit var billingClient: BillingClient
     private lateinit var productDetails: ProductDetails
     private lateinit var purchase: Purchase
-
-    private val productId = "more_recipe_sub"
 
     private val _productName = MutableStateFlow("Searching...")
     val productName = _productName.asStateFlow()
