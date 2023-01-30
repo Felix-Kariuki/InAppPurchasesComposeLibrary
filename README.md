@@ -26,7 +26,7 @@ repositories {
 
 ```gradle
 dependencies {
-	   implementation 'com.github.Felix-Kariuki:InAppUrchasesComposeLibrary:0.1.1'
+	   implementation 'com.github.Felix-Kariuki:InAppPurchasesComposeLibrary:0.1.1'
 }
 ```
 
@@ -37,31 +37,32 @@ dependencies {
  add a product name and description and choose your prefered subscription amount. Once done remember to activate the subscription by clicking activate
  4. On your newly created or existing application on android studio, 
     * ### 1. initialize InAppPurchaseHelper class
+    and pass the activity and product_id of your in app purchase as you named it on playstore
     
-    ```
-    val billingPurchaseHelper = InAppPurchasesHelper(this)
+    ``` kotlin
+    val billingPurchaseHelper = InAppPurchasesHelper(this,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     if you're implementing it on a compossable screen you can initiliaze it this way
-    ```
-    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity)
+    ``` kotlin
+    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     
     you can also collect the purchse process, prduct name and purchase status by implementing this: 
-    ```
+    ``` kotlin
     val purchaseDone by billingPurchaseHelper.purchaseDone.collectAsState(false)
     val productName by billingPurchaseHelper.productName.collectAsState("")
     val purchaseStatus by billingPurchaseHelper.purchaseStatus.collectAsState("")
     ```
     * ### 2. on our purchases button on `onClick` initializePurchase 
     
-    ```
+    ``` kotlin
     billingPurchaseHelper.initializePurchase()
     ```
     if it's a one time purchase you can disable the button by passing `purchaseDone` as the enabled parameter to disable the button
     
-    ```
+    ``` kotlin
     Button(
         onClick = {
             billingPurchaseHelper.initializePurchase()
@@ -90,4 +91,22 @@ dependencies {
     ```
     
     ### Example 
-    Chekout [This project](https://github.com/Felix-Kariuki/Yummy) to get an insight and more understanding of how to implement this or read this [Blog Post]()
+    Chekout [This project](https://github.com/Felix-Kariuki/Yummy) to get an insight and more understanding of how to implement this or read this [Blog Post](https://felixkariuki.hashnode.dev/in-app-purchase-in-jetpack-compose)
+    
+    ## LICENSE
+    ```
+    
+    Copyright 2023 Felix Kariuki
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    ```
