@@ -43,7 +43,7 @@ dependencies {
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     if you're implementing it on a compossable screen you can initiliaze it this way
-    ```
+    ``` kotlin
     val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity)
     billingPurchaseHelper.setUpBillingPurchases()
     ```
