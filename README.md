@@ -37,14 +37,15 @@ dependencies {
  add a product name and description and choose your prefered subscription amount. Once done remember to activate the subscription by clicking activate
  4. On your newly created or existing application on android studio, 
     * ### 1. initialize InAppPurchaseHelper class
+    and pass the activity and product_id of your in app purchase as you named it on playstore
     
     ``` kotlin
-    val billingPurchaseHelper = InAppPurchasesHelper(this)
+    val billingPurchaseHelper = InAppPurchasesHelper(this,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     if you're implementing it on a compossable screen you can initiliaze it this way
     ``` kotlin
-    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity)
+    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     
@@ -90,7 +91,7 @@ dependencies {
     ```
     
     ### Example 
-    Chekout [This project](https://github.com/Felix-Kariuki/Yummy) to get an insight and more understanding of how to implement this or read this [Blog Post]()
+    Chekout [This project](https://github.com/Felix-Kariuki/Yummy) to get an insight and more understanding of how to implement this or read this [Blog Post](https://felixkariuki.hashnode.dev/in-app-purchase-in-jetpack-compose)
     
     ## LICENSE
     ```
