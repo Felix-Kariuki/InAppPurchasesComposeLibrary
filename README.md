@@ -38,7 +38,7 @@ dependencies {
  4. On your newly created or existing application on android studio, 
     * ### 1. initialize InAppPurchaseHelper class
     
-    ```
+    ``` kotlin
     val billingPurchaseHelper = InAppPurchasesHelper(this)
     billingPurchaseHelper.setUpBillingPurchases()
     ```
@@ -49,19 +49,19 @@ dependencies {
     ```
     
     you can also collect the purchse process, prduct name and purchase status by implementing this: 
-    ```
+    ``` kotlin
     val purchaseDone by billingPurchaseHelper.purchaseDone.collectAsState(false)
     val productName by billingPurchaseHelper.productName.collectAsState("")
     val purchaseStatus by billingPurchaseHelper.purchaseStatus.collectAsState("")
     ```
     * ### 2. on our purchases button on `onClick` initializePurchase 
     
-    ```
+    ``` kotlin
     billingPurchaseHelper.initializePurchase()
     ```
     if it's a one time purchase you can disable the button by passing `purchaseDone` as the enabled parameter to disable the button
     
-    ```
+    ``` kotlin
     Button(
         onClick = {
             billingPurchaseHelper.initializePurchase()
@@ -91,3 +91,8 @@ dependencies {
     
     ### Example 
     Chekout [This project](https://github.com/Felix-Kariuki/Yummy) to get an insight and more understanding of how to implement this or read this [Blog Post]()
+    
+    ## LICENSE
+    ```
+    
+    ```
