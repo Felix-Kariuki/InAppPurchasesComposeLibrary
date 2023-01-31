@@ -16,19 +16,20 @@
 
 package com.flexcode.inapppurchasescomposelibrary
 
+import android.app.Activity
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.flexcode.inapppurchasescompose.InAppPurchasesHelper
@@ -39,44 +40,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             InAppPurchasesComposeLibraryTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    val billingPurchaseHelper = InAppPurchasesHelper(this,"test_product")
-                    billingPurchaseHelper.setUpBillingPurchases()
 
-                    val purchaseDone by billingPurchaseHelper.purchaseDone.collectAsState(false)
-                    val productName by billingPurchaseHelper.productName.collectAsState("")
-                    val purchaseStatus by billingPurchaseHelper.purchaseStatus.collectAsState("")
 
-                    Button(
-                        onClick = {
-                            billingPurchaseHelper.initializePurchase()
-                        },
-
-                        shape = RoundedCornerShape(32.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = MaterialTheme.colorScheme.surface,
-                            contentColor = MaterialTheme.colorScheme.onSurface
-                        ),
-                        modifier = Modifier.wrapContentSize(),
-                        enabled = purchaseDone
-                    ) {
-                        Icon(
-                            Icons.Filled.Add,
-                            contentDescription = "InApp Purchases",
-                            modifier = Modifier.size(ButtonDefaults.IconSize)
-                        )
-                        Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(
-                            "In App Purchases",
-                            fontSize = 16.sp,
-                            modifier = Modifier.padding(8.dp)
-                        )
-                    }
-                }
             }
         }
     }
