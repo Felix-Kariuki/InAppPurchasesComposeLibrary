@@ -1,8 +1,7 @@
 # InAppPurchasesComposeLibrary
-This is a Library to make in App purchases integration to Jetpack Compose projects more easier
+This is a Library to make in App purchases ans subscriptions integration to Jetpack Compose projects more easier
 
 https://user-images.githubusercontent.com/61313608/215751864-2185d084-5c73-46c9-bda9-9da52c8e9442.mp4
-
 
 
 
