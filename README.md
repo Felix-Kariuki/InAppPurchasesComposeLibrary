@@ -43,14 +43,31 @@ dependencies {
  4. On your newly created or existing application on android studio, 
     * ### 1. initialize InAppPurchaseHelper class
     and pass the activity and product_id of your in app purchase as you named it on playstore
+   
     
     ``` kotlin
     val billingPurchaseHelper = InAppPurchasesHelper(this,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
-    if you're implementing it on a compossable screen you can initiliaze it this way
+    ` NOTE `
+    * ### 1.1 For Subscriptions ::
+     
     ``` kotlin
-    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity,"test_product")
+    val billingPurchaseHelper = SubscriptionsHelper(this,"test_product_id")
+    billingPurchaseHelper.setUpBillingPurchases()
+    ```
+    
+    if you're implementing it on a compossable screen you can initiliaze it this way
+    
+    ``` kotlin
+    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current,"test_product_id")
+    billingPurchaseHelper.setUpBillingPurchases()
+    ```
+    
+    `for subscriptions`
+    
+     ``` kotlin
+    val billingPurchaseHelper = SubscriptionsHelper(LocalContext.current,"test_product_id")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     
