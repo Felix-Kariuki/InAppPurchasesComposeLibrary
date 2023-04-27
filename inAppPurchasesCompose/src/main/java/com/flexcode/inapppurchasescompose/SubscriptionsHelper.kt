@@ -1,33 +1,28 @@
-/*
- * Copyright 2023 Felix Kariuki.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package com.flexcode.inapppurchasescompose
 
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import com.android.billingclient.api.*
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesResponseListener
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.google.common.collect.ImmutableList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-data class InAppPurchasesHelper(private val context: Context, val productId: String){
+data class SubscriptionsHelper(private val context: Context, val productId: String){
 
     private lateinit var billingClient: BillingClient
     private lateinit var productDetails: ProductDetails
     private lateinit var purchase: Purchase
+
 
     private val _productName = MutableStateFlow("")
     val productName = _productName.asStateFlow()
@@ -76,7 +71,7 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
                     QueryProductDetailsParams.Product.newBuilder()
                         .setProductId(productId)
                         .setProductType(
-                            BillingClient.ProductType.INAPP
+                            BillingClient.ProductType.SUBS
                         )
                         .build()
                 )
@@ -133,6 +128,7 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
                 ImmutableList.of(
                     BillingFlowParams.ProductDetailsParams.newBuilder()
                         .setProductDetails(productDetails)
+                        .setOfferToken(productDetails.subscriptionOfferDetails?.get(0)?.offerToken.toString())
                         .build()
                 )
             )
@@ -143,7 +139,7 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
 
     private fun reloadPurchase() {
         val queryPurchasesParams = QueryPurchasesParams.newBuilder()
-            .setProductType(BillingClient.ProductType.INAPP)
+            .setProductType(BillingClient.ProductType.SUBS)
             .build()
 
         billingClient.queryPurchasesAsync(
@@ -166,7 +162,7 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
 
     companion object {
         const val PURCHASE_STATUS = "PURCHASE_STATUS"
-
     }
 
 }
+
