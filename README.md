@@ -1,8 +1,7 @@
 # InAppPurchasesComposeLibrary
-This is a Library to make in App purchases integration to Jetpack Compose projects more easier
+This is a Library to make in App purchases ans subscriptions integration to Jetpack Compose projects more easier
 
 https://user-images.githubusercontent.com/61313608/215751864-2185d084-5c73-46c9-bda9-9da52c8e9442.mp4
-
 
 
 
@@ -43,14 +42,31 @@ dependencies {
  4. On your newly created or existing application on android studio, 
     * ### 1. initialize InAppPurchaseHelper class
     and pass the activity and product_id of your in app purchase as you named it on playstore
+   
     
     ``` kotlin
     val billingPurchaseHelper = InAppPurchasesHelper(this,"test_product")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
-    if you're implementing it on a compossable screen you can initiliaze it this way
+    ` NOTE `
+    * ### 1.1 For Subscriptions ::
+     
     ``` kotlin
-    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current as Activity,"test_product")
+    val billingPurchaseHelper = SubscriptionsHelper(this,"test_product_id")
+    billingPurchaseHelper.setUpBillingPurchases()
+    ```
+    
+    if you're implementing it on a compossable screen you can initiliaze it this way
+    
+    ``` kotlin
+    val billingPurchaseHelper = InAppPurchasesHelper(LocalContext.current,"test_product_id")
+    billingPurchaseHelper.setUpBillingPurchases()
+    ```
+    
+    `for subscriptions`
+    
+     ``` kotlin
+    val billingPurchaseHelper = SubscriptionsHelper(LocalContext.current,"test_product_id")
     billingPurchaseHelper.setUpBillingPurchases()
     ```
     
