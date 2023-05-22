@@ -20,10 +20,15 @@ import android.content.Context
 import android.util.Log
 import com.android.billingclient.api.*
 import com.google.common.collect.ImmutableList
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-data class InAppPurchasesHelper(private val context: Context, val productId: String){
+data class InAppPurchasesHelper(private val context: Context, val productId: String) {
 
     private lateinit var billingClient: BillingClient
     private lateinit var productDetails: ProductDetails
@@ -38,7 +43,10 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
     private val _purchaseStatus = MutableStateFlow("")
     val purchaseStatus = _purchaseStatus.asStateFlow()
 
-    fun setUpBillingPurchases(){
+    private val _purchaseAcknowledged = MutableStateFlow("")
+    val purchaseAcknowledged = _purchaseAcknowledged.asStateFlow()
+
+    fun setUpBillingPurchases() {
         billingClient = BillingClient.newBuilder(context)
             .setListener(purchasesUpdatedListener)
             .enablePendingPurchases()
@@ -89,11 +97,11 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
             if (productDetailsList.isNotEmpty()) {
                 productDetails = productDetailsList[0]
                 _productName.value = "Purchase Product: " + productDetails.name
-                Log.i(PURCHASE_STATUS,"Purchase Product: ${productDetails.name}")
+                Log.i(PURCHASE_STATUS, "Purchase Product: ${productDetails.name}")
             } else {
                 _purchaseStatus.value = "No Matching Products Found"
                 _purchaseDone.value = false
-                Log.e(PURCHASE_STATUS,"No Matching Products Found")
+                Log.e(PURCHASE_STATUS, "No Matching Products Found")
             }
         }
     }
@@ -118,12 +126,29 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
             }
         }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun completePurchase(item: Purchase) {
         purchase = item
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             _purchaseDone.value = false
             _purchaseStatus.value = "Purchase Completed"
             Log.i(PURCHASE_STATUS, "Purchase Completed")
+            GlobalScope.launch {
+                handlePurchase()
+            }
+        }
+    }
+
+    private suspend fun handlePurchase() {
+        if (purchase.purchaseState === Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken)
+                val ackPurchaseResult = withContext(Dispatchers.IO) {
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
+                }
+                _purchaseAcknowledged.value = "ACKNOWLEDGE CODE:: ${ackPurchaseResult.responseCode}"
+            }
         }
     }
 
@@ -159,10 +184,12 @@ data class InAppPurchasesHelper(private val context: Context, val productId: Str
                 _purchaseDone.value = false
                 _purchaseStatus.value = "Previous Purchase Found"
                 Log.i(PURCHASE_STATUS, "Previous Purchase Found")
+
             } else {
                 _purchaseDone.value = true
             }
         }
+
 
     companion object {
         const val PURCHASE_STATUS = "PURCHASE_STATUS"

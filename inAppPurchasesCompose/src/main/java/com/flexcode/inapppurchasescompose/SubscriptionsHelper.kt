@@ -18,6 +18,7 @@ package com.flexcode.inapppurchasescompose
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -28,9 +29,15 @@ import com.android.billingclient.api.PurchasesResponseListener
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.acknowledgePurchase
 import com.google.common.collect.ImmutableList
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 data class SubscriptionsHelper(private val context: Context, val productId: String){
 
@@ -47,6 +54,9 @@ data class SubscriptionsHelper(private val context: Context, val productId: Stri
 
     private val _purchaseStatus = MutableStateFlow("")
     val purchaseStatus = _purchaseStatus.asStateFlow()
+
+    private val _purchaseAcknowledged = MutableStateFlow("")
+    val purchaseAcknowledged = _purchaseAcknowledged.asStateFlow()
 
     fun setUpBillingPurchases(){
         billingClient = BillingClient.newBuilder(context)
@@ -128,12 +138,29 @@ data class SubscriptionsHelper(private val context: Context, val productId: Stri
             }
         }
 
+    @OptIn(DelicateCoroutinesApi::class)
     private fun completePurchase(item: Purchase) {
         purchase = item
         if (purchase.purchaseState == Purchase.PurchaseState.PURCHASED) {
             _purchaseDone.value = false
             _purchaseStatus.value = "Purchase Completed"
             Log.i(PURCHASE_STATUS, "Purchase Completed")
+            GlobalScope.launch {
+                handlePurchase()
+            }
+        }
+    }
+
+    private suspend fun handlePurchase() {
+        if (purchase.purchaseState === Purchase.PurchaseState.PURCHASED) {
+            if (!purchase.isAcknowledged) {
+                val acknowledgePurchaseParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken)
+                val ackPurchaseResult = withContext(Dispatchers.IO) {
+                    billingClient.acknowledgePurchase(acknowledgePurchaseParams.build())
+                }
+                _purchaseAcknowledged.value = "ACKNOWLEDGE CODE:: ${ackPurchaseResult.responseCode}"
+            }
         }
     }
 
